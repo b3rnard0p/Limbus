@@ -55,6 +55,16 @@ app.get("/api/health", (_req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/pins", pinRoutes);
 
+const frontendDistPath = path.join(__dirname, "../frontend/dist");
+app.use(express.static(frontendDistPath));
+
+app.get("*", (req, res, next) => {
+  if (req.originalUrl.startsWith("/api") || req.originalUrl.startsWith("/uploads")) {
+    return next();
+  }
+  res.sendFile(path.join(frontendDistPath, "index.html"));
+});
+
 app.use(notFound);
 app.use(errorHandler);
 
