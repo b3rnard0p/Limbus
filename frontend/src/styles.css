@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  color: #241b16;
+  background: #151820;
+  font-family: "Cinzel Decorative", serif;
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  font-family: "Cinzel Decorative", serif;
+}
+
+/* Cursor customizado da Limbus aplicado EXCLUSIVAMENTE nas áreas de mapas */
+.custom-cursor,
+.custom-cursor canvas,
+.custom-cursor .leaflet-container {
+  cursor: url('/cursor-logo.png'), crosshair !important;
+}
+
+.cinzel-decorative-regular {
+  font-family: "Cinzel Decorative", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.cinzel-decorative-bold {
+  font-family: "Cinzel Decorative", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.cinzel-decorative-black {
+  font-family: "Cinzel Decorative", serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.story-pin,
+.portal-pin {
+  background: transparent;
+  border: 0;
+}
+
+/* Pin editorial: cículo + haste, estilo Lucide MapPin */
+.story-pin span {
+  position: relative;
+  display: block;
+  width: 28px;
+  height: 36px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23b24a2d' stroke='%23fff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+/* Pin portal: arco de pedra com interior mágico roxo */
+.portal-pin span {
+  display: block;
+  width: 44px;
+  height: 52px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 22V9a5 5 0 0 1 10 0v13' fill='%23a855f7' stroke='%23e9d5ff' stroke-width='1.2'/%3E%3Cpath d='M5 22V9a7 7 0 0 1 14 0v13' stroke='%23334155' stroke-width='2' fill='%23475569'/%3E%3Cpath d='M3 22h18' stroke='%231e293b' stroke-width='2'/%3E%3Ccircle cx='12' cy='12' r='1' fill='%23fff' stroke='none'/%3E%3Ccircle cx='9' cy='16' r='1.5' fill='%23fff' stroke='none'/%3E%3Ccircle cx='15' cy='18' r='1' fill='%23fff' stroke='none'/%3E%3C/svg%3E") center/contain no-repeat;
+  filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.9));
+}
+
+/* Pins com imagem personalizada: sem arredondamento, mantendo a forma original */
+.custom-pin-image {
+  border-radius: 0;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+}
+
+
+.map-tooltip {
+  border: 0;
+  border-radius: 4px;
+  background: rgba(21, 24, 32, 0.86);
+  color: white;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.map-tooltip::before {
+  display: none;
+}
+
+.rich-content h2 {
+  margin: 1.2rem 0 0.4rem;
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.rich-content h3 {
+  margin: 1rem 0 0.35rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.rich-content p {
+  margin: 0 0 1rem;
+}
+
+.rich-content blockquote {
+  margin: 1rem 0;
+  border-left: 3px solid #b24a2d;
+  padding-left: 1rem;
+  color: #4a3326;
+}
+
+.rich-content ul,
+.rich-content ol {
+  margin: 1rem 0;
+  padding-left: 1.25rem;
+}
+
+.ql-toolbar.ql-snow {
+  border-radius: 6px 6px 0 0;
+}
+
+.ql-container.ql-snow {
+  min-height: 160px;
+  border-radius: 0 0 6px 6px;
+}
