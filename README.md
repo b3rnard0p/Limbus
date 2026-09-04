@@ -23,7 +23,7 @@ Abaixo estão detalhados os controladores que compõem a lógica de negócio do 
 
 Gerencia a gestão espacial e o coração do sistema, responsável pela manutenção dos **Pontos de Interesse (Pins)**.
 
-- **Operações:** Permite a criação, leitura, atualização e exclusão (CRUD) dos Pins no mapa.
+- **Operações e Validações:** Permite a criação, leitura, atualização e exclusão (CRUD) dos Pins. O fluxo passa por uma camada de Serviço (`PinService`) que barra a criação de Pins com títulos duplicados dentro de um mesmo mapa.
 - **Processamento de Dados:** Higieniza o HTML recebido (usando `sanitize-html` para evitar XSS) e trata os vínculos de imagens (galeria e ícone personalizado).
 - **Tipos de Pin:** Distingue entre Pins editoriais (informações históricas) e portais (transição interativa entre diferentes mapas da Divina Comédia).
 
@@ -31,7 +31,8 @@ Gerencia a gestão espacial e o coração do sistema, responsável pela manuten�
 
 Lida com a segurança e identidade dos administradores do sistema.
 
-- **Autenticação:** Gerencia o fluxo de login, validando as credenciais e retornando o token JWT para acesso às rotas restritas.
+- **Autenticação Avançada:** Gerencia o fluxo de login gerando e validando uma arquitetura de dois tokens (Access Token e Refresh Token) enviados de forma ultra-segura através de **Cookies HTTP-Only**, mitigando completamente ataques XSS.
+- **Auto-Provisionamento:** Cria dinamicamente o primeiro usuário Administrador no banco de dados durante a inicialização do sistema, caso nenhum exista.
 
 <h2 align="center">Middlewares & Tratamento de Erros</h2>
 
@@ -61,7 +62,7 @@ A estrutura de dados é gerenciada via **Mongoose** no MongoDB, focada em perfor
 
 Define a estrutura central dos marcadores interativos e portais.
 
-- **Atributos Espaciais:** `x`, `y` (coordenadas bidimensionais precisas) e `mapId` (identificador do mapa onde o pin está alocado).
+- **Atributos Espaciais e Literários:** `x`, `y` (coordenadas bidimensionais precisas), `mapId` (identificador do mapa onde o pin está alocado) e `canto` (vínculo numérico direto com um Canto específico da obra literária).
 - **Conteúdo Rico:** `title`, `contentHtml` (textos ricos) e `references` (links externos de estudo).
 - **Mídia:** Gestão integrada de `imageUrl` (imagem de capa), `pinImageUrl` (ícone customizado no mapa) e `gallery` (coleção de imagens complementares).
 - **Classificação:** `pinType` gerencia o comportamento do marcador (`editorial` para texto ou `portal` para navegação imersiva).
@@ -77,7 +78,7 @@ Entidade administrativa do sistema.
 
 A segurança da aplicação segue boas práticas para garantir a integridade dos dados expostos e proteger a API.
 
-- **Autenticação Stateless (JWT):** O sistema não utiliza sessões clássicas no servidor. Todas as rotas de alteração de conteúdo (Admin) exigem um Token JWT válido enviado no cabeçalho.
+- **Autenticação Robusta (Dual Token JWT):** O sistema abandona sessões clássicas e armazena os tokens de acesso e refresh exclusivamente em **Cookies HTTP-Only**. O frontend conta com um interceptador global na API (`api.js`) que capta falhas de rede (Offline) e erros `401 Unauthorized`, integrando-se nativamente a um sistema de **Global Toasts** para feedback visual imediato.
 - **Criptografia:** Armazenamento seguro de senhas no banco de dados via hash gerado pelo `bcrypt`.
 - **Prevenção contra XSS:** Textos formatados digitados no painel admin (WYSIWYG) são estritamente filtrados pelo `sanitize-html` antes de serem persistidos no banco de dados.
 - **Proteções de Rede:** Utilização da biblioteca **Helmet** para injetar cabeçalhos HTTP seguros, **CORS** para restrição de origens aceitas e **Express Rate Limit** para prevenir ataques de força bruta, limitando excesso de requisições por IP.
@@ -96,6 +97,7 @@ O frontend SPA (Single Page Application) foi construído utilizando tecnologias 
   - **Alternância Dinâmica 2D/3D:** O usuário e o administrador podem transitar sem interrupções entre o mapa geográfico 2D (Leaflet) e o modelo tridimensional (Globe.gl).
   - **Controle de Divisão Política:** Ambos os mapas respondem de maneira reativa ao toggle global de "Divisão Política" no painel de configurações. Ao ser ativado/desativado, o Leaflet transita dinamicamente entre as camadas (camada mista para satélite limpo), enquanto o Globo 3D adiciona ou remove os vértices vetoriais de texto dos países, deixando a navegação focada integralmente nos Portais (Pins).
   - **Modo Jornada Cronológica:** Inteligência de mapa capaz de limpar todos os pins não atrelados à aventura principal e ordená-los globalmente, injetando uma elegante insígnia circular sobre cada ponto cronológico (ex: `#1`, `#2`). O cálculo ocorre em tempo real, baseando-se em todos os mapas existentes e ignorando pontos marcados como "Curiosidade" pelos administradores.
+  - **Sistema de Busca Rápida (Cantos):** Ferramenta integrada ao cabeçalho (com morphing UI) que permite aos usuários digitarem o número de um Canto específico e serem teletransportados diretamente para a localização correspondente na jornada, acompanhado de um dropdown inteligente que herda a paleta de cores do sistema.
   - **Estética e Imersão:** Customização visual profunda onde os mapas operam com um ponteiro de mouse exclusivo (Logo do Limbus) via CSS injetado especificamente nas *views* dos gráficos, preservando o cursor clássico nativo do OS para botões e modais de UI.
 - **Componentização Avançada:** Arquitetura organizada em `/components` com foco estrito em reuso modular. Destacam-se Modais customizados (`WindowModal.vue`, `PinModal.vue`) com estética visual tipo "pergaminho" e formulários de administração dinâmicos e flutuantes (`AdminPanel.vue`).
 - **Navegação e Estilização:** O fluxo entre painéis e telas é controlado pelo Vue Router, com responsividade total garantida através do **Tailwind CSS**.
