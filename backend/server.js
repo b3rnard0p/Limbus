@@ -25,6 +25,23 @@ app.use(
   helmet({
     crossOriginResourcePolicy: {
       policy: "cross-origin"
+    },
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: [
+          "'self'", 
+          "data:", 
+          "blob:", 
+          "https://res.cloudinary.com", 
+          "https://*.google.com", 
+          "https://unpkg.com",
+          "https://cdnjs.cloudflare.com"
+        ],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://unpkg.com"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        connectSrc: ["'self'", "https://res.cloudinary.com"]
+      }
     }
   })
 );

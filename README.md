@@ -48,7 +48,7 @@ A camada de middlewares intercepta requisições para validação e processament
 
 ### 3. Otimização de Imagens (`optimizeImages.js`)
 
-- **Performance Extrema:** Intercepta os arquivos em memória e utiliza a biblioteca **Sharp** para convertê-los automaticamente para o formato **WebP** (aplicando compressão de qualidade). Isso reduz drasticamente o tráfego de rede e melhora a velocidade de carregamento dos modais no frontend.
+- **Performance Extrema e Armazenamento em Nuvem:** Intercepta os arquivos em memória, utiliza a biblioteca **Sharp** para convertê-los automaticamente para o formato **WebP** (aplicando compressão de qualidade) e realiza o upload via streaming direto para o **Cloudinary**. Isso garante armazenamento permanente e seguro das mídias (ideal para instâncias efêmeras como Render), além de reduzir drasticamente o tráfego do servidor.
 
 ### 4. Tratamento Global de Erros (`errorHandler.js` e `asyncHandler.js`)
 
