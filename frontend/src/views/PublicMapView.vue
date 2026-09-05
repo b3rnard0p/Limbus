@@ -185,8 +185,7 @@ onBeforeUnmount(() => {
 
     <!-- Logo Centralizado -->
     <div 
-      class="pointer-events-none absolute z-[1050]"
-      :class="justFinishedIntro ? 'animate-fly-logo' : 'top-3 left-1/2 -translate-x-1/2 sm:top-5'"
+      class="pointer-events-none absolute inset-x-0 top-0 z-[1000] hidden sm:flex justify-center p-3 sm:p-5"
     >
       <img src="/Logo.avif" alt="Limbus Logo" class="h-12 sm:h-16 w-auto" />
     </div>
@@ -264,19 +263,36 @@ onBeforeUnmount(() => {
           </Transition>
         </div>
 
-        <!-- Botão de Configurações -->
-        <ButtonCustom
-          text=""
-          square
-          title="Configurações"
-          @click="isSettingsOpen = true"
-        >
-          <template #icon>
-            <Settings />
-          </template>
-        </ButtonCustom>
+        <!-- Botão de Configurações (Desktop) -->
+        <div class="hidden sm:block">
+          <ButtonCustom
+            text=""
+            square
+            title="Configurações"
+            @click="isSettingsOpen = true"
+          >
+            <template #icon>
+              <Settings />
+            </template>
+          </ButtonCustom>
+        </div>
       </nav>
     </header>
+
+    <!-- Controles Mobile (Canto Inferior Esquerdo) -->
+    <div class="pointer-events-none absolute bottom-4 left-4 z-[1000] flex flex-col gap-2 sm:hidden">
+      <ButtonCustom
+        class="pointer-events-auto"
+        text=""
+        square
+        title="Configurações"
+        @click="isSettingsOpen = true"
+      >
+        <template #icon>
+          <Settings />
+        </template>
+      </ButtonCustom>
+    </div>
 
     <div
       v-if="loading"

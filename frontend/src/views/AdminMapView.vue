@@ -301,7 +301,7 @@ onMounted(async () => {
 
     <!-- Header do Admin (Similar ao Público) -->
     <header
-      class="pointer-events-none absolute inset-x-0 top-0 z-[1000] flex flex-wrap items-center justify-between gap-3 bg-gradient-to-b from-black/70 to-transparent p-3 sm:p-5"
+      class="pointer-events-none absolute inset-x-0 top-0 z-[1000] hidden sm:flex flex-wrap items-center justify-between gap-3 bg-gradient-to-b from-black/70 to-transparent p-3 sm:p-5"
     >
       <div class="pointer-events-auto hidden sm:flex items-center gap-2">
         <!-- Botão Sair flutuante alinhado à esquerda -->
