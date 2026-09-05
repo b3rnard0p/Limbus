@@ -3,18 +3,31 @@
     :class="[
       'button', 
       { 'button-square': square },
-      { 'active': active || loading },
+      { 'active': active || loading || isInput },
       `button-size-${size}`,
       `button-variant-${variant}`,
-      { 'no-icon': !hasIcon && !loading }
+      { 'no-icon': !hasIcon && !loading && !isInput }
     ]" 
     :title="title" 
     :type="type"
     :disabled="disabled || loading"
     @click="$emit('click')"
   >
-    <span class="icon" v-if="hasIcon || loading">
+    <span class="icon" :class="{ 'input-mode': isInput }" v-if="hasIcon || loading || isInput">
       <Loader2 v-if="loading" class="animate-spin" />
+      <input 
+        v-else-if="isInput"
+        ref="inputRef"
+        class="custom-btn-input"
+        type="number"
+        min="0"
+        max="100"
+        placeholder="Nº..."
+        :value="modelValue"
+        @input="$emit('update:modelValue', $event.target.value)"
+        @click.stop
+        @keydown.enter.prevent
+      />
       <slot name="icon" v-else>
         <component :is="iconComponent" v-if="iconComponent" />
       </slot>
@@ -26,7 +39,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, watch, nextTick } from 'vue';
 import * as icons from 'lucide-vue-next';
 import { Loader2 } from 'lucide-vue-next';
 
@@ -37,6 +50,14 @@ const props = defineProps({
   },
   loadingText: {
     type: String,
+    default: ""
+  },
+  isInput: {
+    type: Boolean,
+    default: false
+  },
+  modelValue: {
+    type: [String, Number],
     default: ""
   },
   text: {
@@ -83,6 +104,14 @@ const iconComponent = computed(() => icons[props.icon]);
 import { useSlots } from 'vue';
 const slots = useSlots();
 const hasIcon = computed(() => !!slots.icon || !!props.icon);
+
+const inputRef = ref(null);
+watch(() => props.isInput, async (val) => {
+  if (val) {
+    await nextTick();
+    inputRef.value?.focus();
+  }
+});
 </script>
 
 <style scoped>
@@ -190,6 +219,21 @@ const hasIcon = computed(() => !!slots.icon || !!props.icon);
   left: 0.25em;
   transition: all 0.5s;
   z-index: 2; /* Ensure the icon background stays above the text */
+}
+
+.custom-btn-input {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 10px;
+  color: #191919;
+  font-weight: bold;
+  text-align: center;
+}
+.custom-btn-input::placeholder {
+  color: rgba(25, 25, 25, 0.6);
 }
 
 .icon :deep(svg:not(.animate-spin)) {
