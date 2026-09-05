@@ -123,6 +123,7 @@ export async function fetchPins(mapId, summary = false) {
   const query = new URLSearchParams();
   if (mapId) query.append("mapId", mapId);
   if (summary) query.append("summary", "true");
+  query.append("_t", Date.now().toString()); // Cache buster
   
   const payload = await request(`/pins?${query.toString()}`);
   return payload.data;

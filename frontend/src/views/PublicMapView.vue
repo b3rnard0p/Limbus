@@ -105,10 +105,12 @@ async function selectSearchResult(pin) {
 }
 
 async function loadPins() {
-  loading.value = true;
-
   try {
+    loading.value = true;
     pins.value = await fetchPins(currentMapId.value, true);
+    allPins.value = await fetchPins(null, true);
+  } catch (err) {
+    console.error(err);
   } finally {
     loading.value = false;
   }

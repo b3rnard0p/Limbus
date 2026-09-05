@@ -24,6 +24,7 @@ function sanitizeRichHtml(html) {
 
 function uploadUrl(req, file) {
   if (!file) return null;
+  if (file.path && file.path.startsWith("http")) return file.path;
   return `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
 }
 

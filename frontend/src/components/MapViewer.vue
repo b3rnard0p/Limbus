@@ -54,6 +54,7 @@ let globeInstance = null;
 
 let mountedMapId = null;
 let resizeListener = null;
+let resizeObserver = null;
 
 const mapConfig = computed(() => getMapConfig(props.mapId));
 const isLeaflet = computed(() => mapConfig.value.tileMode && !props.globeMode);
@@ -121,10 +122,18 @@ async function renderLeaflet() {
     return minZoom;
   };
 
-  const minZoom = setExactMinZoom();
-  leafletMap.setView([20, 15], minZoom, { animate: false });
+  setTimeout(() => {
+    if (leafletMap) {
+      leafletMap.invalidateSize();
+      const minZoom = setExactMinZoom();
+      leafletMap.setView([20, 15], minZoom, { animate: false });
+    }
+  }, 100);
 
-  resizeListener = () => setExactMinZoom();
+  resizeListener = () => {
+    if (leafletMap) leafletMap.invalidateSize();
+    setExactMinZoom();
+  };
   window.addEventListener("resize", resizeListener);
 }
 
@@ -138,6 +147,10 @@ function destroyGlobe() {
      window.removeEventListener("resize", resizeListener);
      resizeListener = null;
   }
+  if (resizeObserver) {
+     resizeObserver.disconnect();
+     resizeObserver = null;
+  }
 }
 
 async function renderGlobe() {
@@ -146,9 +159,9 @@ async function renderGlobe() {
   if (!globeElement.value) return;
 
   globeInstance = Globe()(globeElement.value)
-    .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-    .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
-    .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+    .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+    .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+    .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
     .pointOfView({ lat: 20, lng: 15, altitude: 2 });
 
   let fetchProm = Promise.resolve();
@@ -181,13 +194,13 @@ async function renderGlobe() {
     });
   }
 
-  resizeListener = () => {
+  resizeObserver = new ResizeObserver(() => {
     if (globeInstance && globeElement.value) {
       globeInstance.width(globeElement.value.clientWidth);
       globeInstance.height(globeElement.value.clientHeight);
     }
-  };
-  window.addEventListener("resize", resizeListener);
+  });
+  if (globeElement.value) resizeObserver.observe(globeElement.value);
 }
 
 function destroyOSD() {

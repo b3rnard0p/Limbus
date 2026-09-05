@@ -131,6 +131,7 @@ const { showToast } = useToast();
 async function loadPins() {
   try {
     pins.value = await fetchPins(currentMapId.value, true);
+    allPins.value = await fetchPins(null, true);
   } catch (err) {
     // api.js já dispara o toast de erro, então não precisamos chamar showToast('...', 'error') aqui.
     console.error(err);
