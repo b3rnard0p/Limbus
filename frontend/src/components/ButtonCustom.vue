@@ -15,19 +15,21 @@
   >
     <span class="icon" :class="{ 'input-mode': isInput }" v-if="hasIcon || loading || isInput">
       <Loader2 v-if="loading" class="animate-spin" />
-      <input 
-        v-else-if="isInput"
-        ref="inputRef"
-        class="custom-btn-input"
-        type="number"
-        min="0"
-        max="100"
-        placeholder="Nº..."
-        :value="modelValue"
-        @input="$emit('update:modelValue', $event.target.value)"
-        @click.stop
-        @keydown.enter.prevent
-      />
+      <div v-else-if="isInput" class="flex items-center w-full h-full px-1 justify-between">
+        <input 
+          ref="inputRef"
+          class="custom-btn-input flex-1 min-w-0"
+          type="number"
+          min="0"
+          max="100"
+          placeholder="Nº..."
+          :value="modelValue"
+          @input="$emit('update:modelValue', $event.target.value)"
+          @click.stop
+          @keydown.enter.prevent
+        />
+        <X class="h-5 w-5 shrink-0 cursor-pointer text-white hover:text-[#fca5a5] transition-colors mr-1" @click.stop="$emit('close-input')" />
+      </div>
       <slot name="icon" v-else>
         <component :is="iconComponent" v-if="iconComponent" />
       </slot>
@@ -41,7 +43,7 @@
 <script setup>
 import { computed, ref, watch, nextTick } from 'vue';
 import * as icons from 'lucide-vue-next';
-import { Loader2 } from 'lucide-vue-next';
+import { Loader2, X } from 'lucide-vue-next';
 
 const props = defineProps({
   loading: {
@@ -98,7 +100,7 @@ const props = defineProps({
   }
 });
 
-defineEmits(["click"]);
+defineEmits(["click", "update:modelValue", "close-input"]);
 
 const iconComponent = computed(() => icons[props.icon]);
 import { useSlots } from 'vue';
@@ -231,6 +233,12 @@ watch(() => props.isInput, async (val) => {
   color: #191919;
   font-weight: bold;
   text-align: center;
+  -moz-appearance: textfield;
+}
+.custom-btn-input::-webkit-outer-spin-button,
+.custom-btn-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 .custom-btn-input::placeholder {
   color: rgba(25, 25, 25, 0.6);

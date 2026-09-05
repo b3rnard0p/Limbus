@@ -224,70 +224,44 @@ onBeforeUnmount(() => {
         <!-- Bloco de Pesquisa -->
         <div class="flex items-start gap-2 relative">
           <ButtonCustom
-            :text="isSearchOpen ? 'X' : 'Canto'"
+            :text="isSearchOpen ? '' : 'Canto'"
             title="Buscar Canto"
             :isInput="isSearchOpen"
             v-model="searchQuery"
-            @click="toggleSearch"
+            class="transition-all"
+            :class="isSearchOpen ? 'w-32 sm:w-48' : ''"
+            @click="!isSearchOpen ? toggleSearch() : null"
+            @close-input="toggleSearch"
           >
             <template #icon>
-              <Search v-if="!isSearchOpen" />
-              <X v-else />
+              <Search />
             </template>
           </ButtonCustom>
           
-          <!-- Resultados da pesquisa (posição absoluta) -->
-          <ul
-            v-if="isSearchOpen && searchQuery !== ''"
-            :class="[
-              'absolute top-[50px] right-0 mt-2 flex max-h-[50vh] w-48 flex-col gap-1 overflow-y-auto rounded-[4px] border-4 p-2 shadow-[0_6px_10px_rgba(0,0,0,0.5)]',
-              currentMapId === 'inferno' ? 'border-[#1a0505] bg-[#3f0b0b]' : 
-              currentMapId === 'purgatorio' ? 'border-[#44403c] bg-[#a8a29e]' :
-              currentMapId === 'paraiso' ? 'border-[#ca8a04] bg-[#f0f9ff]' :
-              'border-[#3e2312] bg-[#ebd5ab]'
-            ]"
-          >
-            <li v-if="searchResults.length === 0" :class="[
-              'text-sm font-bold',
-              currentMapId === 'inferno' ? 'text-[#fca5a5]' : 
-              currentMapId === 'purgatorio' ? 'text-[#1c1917]' :
-              currentMapId === 'paraiso' ? 'text-[#0369a1]' :
-              'text-[#5e3a21]'
-            ]">
-              Nenhum ponto.
-            </li>
-            <li
-              v-for="res in searchResults"
-              :key="res._id"
-              :class="[
-                'cursor-pointer rounded border px-2 py-1.5 transition',
-                currentMapId === 'inferno' ? 'border-[#1a0505]/50 bg-[#2b0707] hover:bg-[#5f1313]' : 
-                currentMapId === 'purgatorio' ? 'border-[#44403c]/30 bg-[#78716c] hover:bg-[#a8a29e]' :
-                currentMapId === 'paraiso' ? 'border-[#ca8a04]/30 bg-[#e0f2fe] hover:bg-[#bae6fd]' :
-                'border-[#3e2312]/20 bg-[#f4e7c5] hover:bg-[#d2a648]/40'
-              ]"
-              @click="selectSearchResult(res)"
+          <!-- Resultados com estética correspondente -->
+          <Transition name="slide-left">
+            <ul
+              v-if="searchQuery !== '' && isSearchOpen"
+              class="absolute top-[110%] right-0 mt-1 flex max-h-[50vh] w-48 flex-col gap-1 overflow-y-auto rounded-lg border-4 border-[#8B1E1E] bg-[#fdfaf0] p-2 shadow-[0_6px_10px_rgba(0,0,0,0.5)]"
             >
-              <p :class="[
-                'font-display text-sm font-bold leading-tight',
-                currentMapId === 'inferno' ? 'text-[#fca5a5]' : 
-                currentMapId === 'purgatorio' ? 'text-[#1c1917]' :
-                currentMapId === 'paraiso' ? 'text-[#0369a1]' :
-                'text-[#2c1a0e]'
-              ]">
-                {{ res.title }}
-              </p>
-              <p :class="[
-                'mt-0.5 text-[10px] font-bold uppercase',
-                currentMapId === 'inferno' ? 'text-[#fca5a5]/70' : 
-                currentMapId === 'purgatorio' ? 'text-[#1c1917]/70' :
-                currentMapId === 'paraiso' ? 'text-[#0369a1]/70' :
-                'text-[#5e3a21]'
-              ]">
-                {{ MAP_OPTIONS.find(m => m.id === res.mapId)?.label || res.mapId }}
-              </p>
-            </li>
-          </ul>
+              <li v-if="searchResults.length === 0" class="text-sm font-bold text-[#8B1E1E]">
+                Nenhum ponto.
+              </li>
+              <li
+                v-for="res in searchResults"
+                :key="res._id"
+                class="group cursor-pointer rounded border-2 border-[#C9A24B]/50 bg-white px-2 py-1.5 transition hover:border-[#C9A24B] hover:bg-[#C9A24B]"
+                @click="selectSearchResult(res)"
+              >
+                <p class="font-display text-sm font-bold leading-tight text-[#8B1E1E] group-hover:text-white">
+                  {{ res.title }}
+                </p>
+                <p class="mt-0.5 text-[10px] font-bold uppercase text-slate-500 group-hover:text-white/80">
+                  {{ MAP_OPTIONS.find(m => m.id === res.mapId)?.label || res.mapId }}
+                </p>
+              </li>
+            </ul>
+          </Transition>
         </div>
 
         <!-- Botão de Configurações -->

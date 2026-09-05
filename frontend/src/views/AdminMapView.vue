@@ -8,10 +8,6 @@ import PinModal from "../components/PinModal.vue";
 import SettingsModal from "../components/SettingsModal.vue";
 import ButtonCustom from "../components/ButtonCustom.vue";
 import WindowModal from "../components/WindowModal.vue";
-import MedievalInput from "../components/MedievalInput.vue";
-import InfernoInput from "../components/InfernoInput.vue";
-import PurgatorioInput from "../components/PurgatorioInput.vue";
-import ParaisoInput from "../components/ParaisoInput.vue";
 import {
   logoutUser,
   createPin,
@@ -52,13 +48,6 @@ const filteredPins = computed(() => {
 });
 
 
-
-const ThemedInput = computed(() => {
-  if (currentMapId.value === "inferno") return InfernoInput;
-  if (currentMapId.value === "purgatorio") return PurgatorioInput;
-  if (currentMapId.value === "paraiso") return ParaisoInput;
-  return MedievalInput;
-});
 
 const searchResults = computed(() => {
   if (searchQuery.value === "") return [];
@@ -352,33 +341,16 @@ onMounted(async () => {
         <div class="relative flex flex-col items-end z-[2000]">
           <ButtonCustom
             :text="isSearchOpen ? '' : 'Canto'"
-            :active="isSearchOpen"
             title="Buscar Canto"
-            @click="!isSearchOpen ? toggleSearch() : null"
+            :isInput="isSearchOpen"
+            v-model="searchQuery"
             class="transition-all"
             :class="isSearchOpen ? 'w-32 sm:w-48' : ''"
+            @click="!isSearchOpen ? toggleSearch() : null"
+            @close-input="toggleSearch"
           >
             <template #icon>
-              <!-- Fechado: Ícone de Lupa -->
-              <Search v-if="!isSearchOpen" />
-              
-              <!-- Aberto: Input dentro da bolinha dourada expandida -->
-              <div v-else class="flex w-full h-full items-center px-1">
-                <input
-                  type="number"
-                  v-model="searchQuery"
-                  min="0"
-                  max="100"
-                  placeholder="Nº..."
-                  autofocus
-                  class="w-full h-full bg-transparent text-white placeholder:text-white/60 outline-none font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  @click.stop
-                />
-                <X 
-                  class="h-5 w-5 shrink-0 cursor-pointer text-white hover:text-red-200 transition-colors mr-1" 
-                  @click.stop="toggleSearch" 
-                />
-              </div>
+              <Search />
             </template>
           </ButtonCustom>
           
