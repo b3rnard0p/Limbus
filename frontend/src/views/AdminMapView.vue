@@ -531,6 +531,8 @@ onMounted(async () => {
 
         <ButtonCustom
           text="Excluir pin"
+          loadingText="Excluindo…"
+          :loading="saving"
           icon="Trash2"
           type="button"
           :disabled="saving"

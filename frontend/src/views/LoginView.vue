@@ -64,6 +64,8 @@ async function submit() {
 
       <ButtonCustom
         text="Entrar"
+        loadingText="Entrando…"
+        :loading="loading"
         icon="LogIn"
         type="submit"
         :disabled="loading"

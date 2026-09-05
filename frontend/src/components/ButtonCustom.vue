@@ -3,23 +3,24 @@
     :class="[
       'button', 
       { 'button-square': square },
-      { 'active': active },
+      { 'active': active || loading },
       `button-size-${size}`,
       `button-variant-${variant}`,
-      { 'no-icon': !hasIcon }
+      { 'no-icon': !hasIcon && !loading }
     ]" 
     :title="title" 
     :type="type"
-    :disabled="disabled"
+    :disabled="disabled || loading"
     @click="$emit('click')"
   >
-    <span class="icon" v-if="hasIcon">
-      <slot name="icon">
+    <span class="icon" v-if="hasIcon || loading">
+      <Loader2 v-if="loading" class="animate-spin" />
+      <slot name="icon" v-else>
         <component :is="iconComponent" v-if="iconComponent" />
       </slot>
     </span>
     <span class="text-content" v-if="!square && text">
-      <slot>{{ text }}</slot>
+      <slot>{{ loading ? (loadingText || text) : text }}</slot>
     </span>
   </button>
 </template>
@@ -27,8 +28,17 @@
 <script setup>
 import { computed } from 'vue';
 import * as icons from 'lucide-vue-next';
+import { Loader2 } from 'lucide-vue-next';
 
 const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  loadingText: {
+    type: String,
+    default: ""
+  },
   text: {
     type: String,
     default: ""
@@ -182,8 +192,12 @@ const hasIcon = computed(() => !!slots.icon || !!props.icon);
   z-index: 2; /* Ensure the icon background stays above the text */
 }
 
-.icon :deep(svg) {
+.icon :deep(svg:not(.animate-spin)) {
   transition: all 0.5s;
+  color: white;
+}
+
+.icon :deep(svg.animate-spin) {
   color: white;
 }
 
@@ -198,8 +212,8 @@ const hasIcon = computed(() => !!slots.icon || !!props.icon);
 }
 
 /* Hover e Active effects */
-.button:hover .icon :deep(svg),
-.button.active .icon :deep(svg) {
+.button:hover .icon :deep(svg:not(.animate-spin)),
+.button.active .icon :deep(svg:not(.animate-spin)) {
   transform: rotate(360deg);
 }
 

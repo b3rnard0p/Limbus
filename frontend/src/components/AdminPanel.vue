@@ -342,7 +342,9 @@ watch(() => props.modelValue, resetFromModel, { immediate: true });
               @click="emit('delete')"
             />
             <ButtonCustom
-              :text="saving ? 'Salvando…' : 'Salvar'"
+              text="Salvar"
+              loadingText="Salvando…"
+              :loading="saving"
               icon="Save"
               type="submit"
               class="w-full sm:w-auto"
