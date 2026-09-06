@@ -22,6 +22,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  activePinId: {
+    type: String,
+    default: null
+  },
   alwaysShowLabels: {
     type: Boolean,
     default: false
@@ -59,6 +63,8 @@ let resizeObserver = null;
 const mapConfig = computed(() => getMapConfig(props.mapId));
 const isLeaflet = computed(() => mapConfig.value.tileMode && !props.globeMode);
 const isGlobe = computed(() => mapConfig.value.tileMode && props.globeMode);
+
+watch(() => props.activePinId, drawPins);
 
 function destroyLeaflet() {
   if (resizeListener) {
@@ -340,7 +346,8 @@ function drawPins() {
       `;
     }
 
-    const labelVisibility = props.alwaysShowLabels ? 'opacity-100' : 'opacity-0 group-hover:opacity-100';
+    const isTarget = props.activePinId && props.activePinId === pin._id;
+    const labelVisibility = (props.alwaysShowLabels || isTarget) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100';
     const iconHtml = `
       <div class="group relative flex flex-col items-center">
         ${journeyBadge}

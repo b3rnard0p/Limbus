@@ -26,6 +26,7 @@ const showPoliticalDivision = ref(true);
 const showJourney = ref(false);
 const pinFilter = ref("all");
 const isGlobeMode = ref(false);
+const activePinId = ref(null);
 
 const currentMap = computed(() => getMapConfig(currentMapId.value));
 
@@ -36,10 +37,6 @@ const filteredPins = computed(() => {
   if (pinFilter.value === "info") return pins.value.filter(p => p.pinType === "editorial" && (p.canto === null || p.canto === undefined));
   return pins.value;
 });
-
-
-
-
 
 const canGoBack = computed(
   () => Boolean(currentMap.value.parentId) && currentMapId.value !== "earth-modern"
@@ -92,7 +89,19 @@ async function selectSearchResult(pin) {
   }
   
   mapViewer.value?.focusAt(pin.x, pin.y);
-  await openPin(pin);
+  
+  if (pin.pinType === 'portal') {
+    activePinId.value = pin._id;
+    // Tira o destaque depois de 4 segundos
+    setTimeout(() => {
+      if (activePinId.value === pin._id) {
+        activePinId.value = null;
+      }
+    }, 4000);
+  } else {
+    activePinId.value = null;
+    await openPin(pin);
+  }
 }
 
 async function loadPins() {
@@ -175,6 +184,7 @@ onBeforeUnmount(() => {
       :map-id="currentMapId"
       :pins="filteredPins"
       :all-pins="allPins"
+      :active-pin-id="activePinId"
       :always-show-labels="alwaysShowLabels"
       :show-political-division="showPoliticalDivision"
       :show-journey="showJourney"

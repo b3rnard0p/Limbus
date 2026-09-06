@@ -69,6 +69,10 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
 });
 
+app.get("/ping", (_req, res) => {
+  res.sendStatus(200);
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/pins", pinRoutes);
 
