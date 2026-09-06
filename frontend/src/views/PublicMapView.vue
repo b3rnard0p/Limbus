@@ -159,7 +159,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <main class="relative h-screen w-full overflow-hidden bg-night text-white">
+  <main class="relative h-[100dvh] w-full overflow-hidden bg-night text-white">
     
     <SettingsModal 
       :is-open="isSettingsOpen" 
@@ -185,16 +185,18 @@ onBeforeUnmount(() => {
 
     <!-- Logo Centralizado -->
     <div 
-      class="pointer-events-none absolute inset-x-0 top-0 z-[1000] hidden sm:flex justify-center p-3 sm:p-5"
+      class="pointer-events-none absolute z-[1050] hidden min-[930px]:block"
+      :class="justFinishedIntro ? 'animate-fly-logo' : 'top-3 left-1/2 -translate-x-1/2 min-[930px]:top-5'"
     >
-      <img src="/Logo.avif" alt="Limbus Logo" class="h-12 sm:h-16 w-auto" />
+      <img src="/Logo.avif" alt="Limbus Logo" class="h-12 min-[930px]:h-16 w-auto" />
     </div>
 
     <!-- UI controls stay on top (z-index: 1000) -->
     <header
-      class="pointer-events-none absolute inset-x-0 top-0 z-[1000] flex flex-wrap items-center justify-end gap-3 bg-gradient-to-b from-black/70 to-transparent p-3 sm:p-5"
+      class="pointer-events-none absolute inset-x-0 top-0 z-[1000] flex items-start justify-between gap-2 bg-gradient-to-b from-black/70 to-transparent p-3 min-[930px]:p-5"
     >
-      <nav class="pointer-events-auto flex items-start gap-2">
+      <!-- Espaço Esquerdo (Voltar) -->
+      <div class="flex-1 flex justify-start pointer-events-auto">
         <ButtonCustom
           v-if="canGoBack"
           text=""
@@ -206,6 +208,10 @@ onBeforeUnmount(() => {
             <ArrowLeft />
           </template>
         </ButtonCustom>
+      </div>
+
+      <!-- Navegação Principal -->
+      <nav class="pointer-events-auto flex items-start gap-2 flex-shrink-0 min-[930px]:flex-1 min-[930px]:justify-end min-[930px]:mr-16">
         <!-- Toggle Mundo Real / Medieval -->
         <ButtonCustom
           :text="currentMapId === 'earth-modern' ? 'M. Medieval' : 'Mundo'"
@@ -262,22 +268,26 @@ onBeforeUnmount(() => {
             </ul>
           </Transition>
         </div>
-
-        <!-- Botão de Configurações (Desktop) -->
-        <div class="hidden sm:block">
-          <ButtonCustom
-            text=""
-            square
-            title="Configurações"
-            @click="isSettingsOpen = true"
-          >
-            <template #icon>
-              <Settings />
-            </template>
-          </ButtonCustom>
-        </div>
       </nav>
+
+      <!-- Espaço Direito (Apenas Mobile, para forçar a nav pro centro perfeito) -->
+      <div class="flex-1 hidden max-[929px]:block pointer-events-none"></div>
     </header>
+
+    <!-- Botão Configurações (Topo Direito em Telas Maiores) -->
+    <div class="pointer-events-none absolute top-0 right-0 z-[1001] p-3 min-[930px]:p-5 hidden sm:block">
+      <ButtonCustom
+        class="pointer-events-auto"
+        text=""
+        square
+        title="Configurações"
+        @click="isSettingsOpen = true"
+      >
+        <template #icon>
+          <Settings />
+        </template>
+      </ButtonCustom>
+    </div>
 
     <!-- Controles Mobile (Canto Inferior Esquerdo) -->
     <div class="pointer-events-none absolute bottom-4 left-4 z-[1000] flex flex-col gap-2 sm:hidden">
@@ -397,7 +407,7 @@ onBeforeUnmount(() => {
   }
 }
 
-@media (min-width: 640px) {
+@media (min-width: 930px) {
   @keyframes flyLogo {
     0% {
       top: 50%;
@@ -405,7 +415,7 @@ onBeforeUnmount(() => {
       transform: translate(-50%, -50%) scale(4);
     }
     100% {
-      top: 1.25rem; /* top-5 (sm:top-5) */
+      top: 1.25rem; /* top-5 (min-[930px]:top-5) */
       left: 50%;
       transform: translate(-50%, 0) scale(1);
     }

@@ -29,7 +29,7 @@ async function submit() {
 </script>
 
 <template>
-  <main class="grid min-h-screen place-items-center bg-black/60 px-4">
+  <main class="grid min-h-[100dvh] place-items-center bg-black/60 px-4">
     <div class="fixed inset-0 backdrop-blur-sm pointer-events-none -z-10" />
 
     <WindowModal :is-open="true" title="Limbus Admin" hide-close-button>

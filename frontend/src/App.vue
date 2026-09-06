@@ -50,9 +50,9 @@ watch(() => route.path, (newPath) => {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: black;
+  width: 100%;
+  height: 100dvh;
+  background-color: #f4f4f4;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,7 +62,10 @@ watch(() => route.path, (newPath) => {
 .intro-video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  /* Reduz levemente o tamanho máximo para dar um respiro (opcional, 90%) */
+  max-width: 90vw;
+  max-height: 90dvh;
 }
 
 .fade-leave-active {
